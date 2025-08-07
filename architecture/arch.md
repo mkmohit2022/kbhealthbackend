@@ -2,7 +2,7 @@
 
 This folder contains the system architecture and components for healthcare app. The architecture supports real-time syncing, encryption, microservices, and scalable infrastructure.
 
-## 📱 Android Client App
+## Android Client App
 - Offline-first with Encrypted SQLite databse on the mobile devices for data storage oggline
 - Auth token storage on app after login
 - Secure bi-directional sync service between the SQLite database and the server database.
@@ -38,3 +38,47 @@ This folder contains the system architecture and components for healthcare app. 
 - ELK Stack, Prometheus + Grafana
 ---
 
+
++----------------------------+
+|    Android Mobile App     |
+| +----------------------+  |
+| | Local Encrypted DB   |  |
+| | Offline Data Cache   |  |
+| +----------------------+  |
+|        |        ^         |
+|        v        |         |
+|  Background Sync Service  |
++------------|-------------+
+             |
+             v
+     +------------------+
+     |   API Gateway    |
+     |  (Auth + Rate    |
+     |   Limiting)      |
+     +------------------+
+             |
+    +--------+--------+
+    |        |        |
+    v        v        v
++--------+ +---------+ +-----------+
+| Auth   | | Patient | | Sync      |
+|Service | | Service | | Service   |
++--------+ +---------+ +-----------+
+    |        |        |
+    v        v        v
++---------------------------------+
+|         PostgreSQL DB           |
+|   (Encrypted fields + TDE)      |
++---------------------------------+
+             |
+             v
++--------------------------------+
+|         Redis (Rate Limit,     |
+|       Caching, Sessions)       |
++--------------------------------+
+             |
+             v
++------------------------------+
+| Key Management System (KMS) |
+| e.g., HashiCorp Vault        |
++------------------------------+
