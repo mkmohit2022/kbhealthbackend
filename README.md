@@ -55,3 +55,20 @@ Includes:
 - DEK: Rotated per update or per-patient if required
 
 ---
+
+
+## Rate Limiting Strategy
+
+### Goals
+- Protect API from DOS or unnecesaary load
+- Handle 2000 RPS system-wide
+- Apply role-specific and endpoint-specific rules
+- Allow emergency override
+
+### Algorithm For Rate Limit
+- **Token Bucket** with **Sliding Window Counter**
+- Backed by **Redis** (distributed rate limiting)
+
+### Emergency Bypass
+- `X-Bypass-Token` header (time-limited, OTP protected)
+- Logged and auditable
